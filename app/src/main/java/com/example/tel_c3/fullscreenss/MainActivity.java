@@ -2,6 +2,7 @@ package com.example.tel_c3.fullscreenss;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.support.design.widget.FloatingActionButton;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -34,6 +36,16 @@ public class MainActivity extends AppCompatActivity {
 
         textView = (TextView) findViewById(R.id.textView);
         textView.setText("Your ScreenShot Image:");
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setBackgroundTintList(getResources().getColorStateList(android.R.color.white));
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                screenShot(view);
+                shareViaFab(view);
+            }
+        });
 
         captureScreenShot = (Button) findViewById(R.id.capture_screen_shot);
         imageView = (ImageView) findViewById(R.id.imageView);
@@ -78,8 +90,19 @@ public class MainActivity extends AppCompatActivity {
 
     private Intent createShareIntent() {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("text/plain");
+        shareIntent.setType("image/jpg");
+        final File photoFile = new File(Environment.getExternalStorageDirectory(), "ezkieu.jpg");
+        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
         shareIntent.putExtra(Intent.EXTRA_TEXT, "#NuhunSTTTelkom");
         return shareIntent;
+    }
+
+    public void shareViaFab(View view) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("image/jpg");
+        final File photoFile = new File(Environment.getExternalStorageDirectory(), "ezkieu.jpg");
+        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "#NuhunSTTTelkom");
+        startActivity(Intent.createChooser(shareIntent, "Share..."));
     }
 }
